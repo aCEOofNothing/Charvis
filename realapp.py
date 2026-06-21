@@ -56,7 +56,7 @@ def handle_command(text):
             else:
                 print("⚠️ Nichts zum Schreiben erkannt")
 
-            return
+            return #teständerung
 
     found = False
 
