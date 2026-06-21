@@ -8,5 +8,5 @@ Charvis is a modular assistant system. It already has voiceinput and commands.
 - Optional UI overlay
 - Python-based core
 
-#JAPADAPADU!
+# JAPADAPADU!
 Geil Junge!
