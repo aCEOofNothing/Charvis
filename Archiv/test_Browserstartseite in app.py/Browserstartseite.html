@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meine Startseite</title>
+  <style>
+    :root {
+      --bg: #0f0f1a;
+      --accent: #e600ff;
+      --text: #f0f0f0;
+      --card: #1a1a2e;
+      --hover: #2b2b44;
+
+      --bg-light: #f4f4f4;
+      --text-light: #111;
+      --card-light: #ffffff;
+      --hover-light: #eaeaea;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding: 20px;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    body.light-mode {
+      background: var(--bg-light);
+      color: var(--text-light);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    h3 {
+      margin-bottom: 0.3rem;
+    }
+
+    .widgets, .shortcuts, .toolbar {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      transition: background 0.3s ease;
+    }
+
+    body.light-mode .card {
+      background: var(--card-light);
+    }
+
+    .card:hover {
+      background: var(--hover);
+    }
+
+    body.light-mode .card:hover {
+      background: var(--hover-light);
+    }
+
+    .quote-box {
+  width: 400px;         /* feste Breite */
+  overflow: auto;       /* Scrollbar bei Überlänge */
+  padding: 10px;
+  border-radius: 8px;
+  word-wrap: break-word;  /* automatische Zeilenumbrüche */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;  /* optional: vertikal zentrieren */
+}
+
+
+
+    .shortcut-list button, .toolbar button, .todo button, .toolbar a {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .shortcut-list button:hover, .toolbar button:hover, .todo button:hover {
+      opacity: 0.85;
+    }
+
+    .more-btn {
+      border: none;
+      background: transparent;
+      font-size: 18px;
+      cursor: pointer;
+      color: var(--text);
+      filter: drop-shadow(0 0 3px rgba(0, 136, 255, 0.6));
+    }
+
+    .shortcut-entry {
+      width: 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .shortcut-entry img {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+
+    .shortcut-entry span {
+      margin-top: 6px;
+      font-size: 0.85rem;
+    }
+
+    .chat-input {
+      margin-top: 10px;
+    }
+
+    .chat-input input {
+      width: 90%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--accent);
+      background: var(--card);
+      color: var(--text);
+    }
+
+    body.light-mode .chat-input input {
+      background: var(--card-light);
+      color: var(--text-light);
+    }
+
+.toolbar a:link {
+  text-decoration: none;
+}
+
+.toolbar a:visited {
+  text-decoration: none;
+}
+
+.toolbar a:hover {
+  text-decoration: underline;
+}
+
+.toolbar a:active {
+  text-decoration: underline;
+color: #e600ff;
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Startseite</h1>
+    <p>Willkommen, Bro. Bereit für den Tag?</p>
+    <div class="chat-input">
+      <input type="text" id="chatInput" placeholder="Frage ChatGPT was... (nur Fake für Demo)">
+    </div>
+  </header>
+
+  <section class="toolbar">
+    <button onclick="window.location.reload()">🔄 Aktualisieren</button>
+    <button onclick="showTime()">⏰ Uhrzeit</button>
+    <button onclick="toggleTheme()">🌙 Dark/Light</button>
+<a href="file:///C:/Users/SchuelerGMS120/Documents/Programieren/TheProjekt/Datenspeicherungsapp/Datenspeicherungsapp.html">📂 Personendaten-Manager</a>
+  </section>
+
+  <section class="widgets">
+    <div class="card">
+      <h3>Uhrzeit</h3>
+      <p id="clock">Lade...</p>
+    </div>
+    <div class="card quote-box">
+      <h3>Motivation/Zitate</h3>
+      <p id="quote">Lade Zitat...</p>
+      <p id="author" style="font-size: 0.8em; color: gray;"></p>
+    </div>
+    <div class="card todo">
+      <h3>ToDo</h3>
+      <ul id="todo-list" contenteditable="true">
+        <li>Schule</li>
+        <li>HTML üben</li>
+        <li>Flipper basteln</li>
+      </ul>
+      <button onclick="saveTodo()">💾 Speichern</button>
+    </div>
+  </section>
+
+  <section class="shortcuts">
+    <div class="card shortcut-list">
+      <h3>Schnellzugriffe</h3>
+      <div id="shortcut-ul" style="display: flex; flex-wrap: wrap; gap: 15px;"></div>
+      <button onclick="addShortcutDialog()">+ Hinzufügen</button>
+    </div>
+  </section>
+
+  <dialog id="shortcutDialog">
+    <form method="dialog">
+      <p><label>Name:<br><input type="text" id="shortcutName"></label></p>
+      <p><label>URL:<br><input type="url" id="shortcutURL"></label></p>
+      <p><label>Icon (optional):<br><input type="file" id="shortcutIcon"></label></p>
+      <menu>
+        <button value="cancel">Abbrechen</button>
+        <button value="default" onclick="submitShortcutDialog()">Speichern</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <script>
+
+    const quotes = [
+  { text: "Mach’s einfach. Und dann mach’s besser.", author: "" },
+  { text: "Code ist wie Magie, nur logischer.", author: "" },
+  { text: "Heute ist der beste Tag, um was Krasses zu bauen.", author: "" },
+  { text: "Fantasie ist wichtiger als Wissen, denn Wissen ist begrenzt.", author: "Albert Einstein" },
+  { text: "Klug ist jener, der Schweres einfach sagt.", author: "Albert Einstein" },
+  { text: "Die Welt wird nicht bedroht von den Menschen, die böse sind, sondern von denen, die das Böse zulassen.", author: "Albert Einstein" },
+  { text: "Es gibt nur zwei Arten zu leben. Entweder so als wäre nichts ein Wunder oder so als wäre alles ein Wunder.", author: "Albert Einstein" },
+  { text: "Geniale Menschen sind selten ordentlich, ordentliche selten genial.", author: "Albert Einstein" },
+  { text: "Ordnung braucht nur der Dumme, das Genie beherrscht das Chaos.", author: "Albert Einstein" },
+  { text: "Der Zufall ist Gottes Art, anonym zu bleiben.", author: "Albert Einstein" },
+  { text: "Das Reh springt hoch, das Reh springt weit, wieso auch nicht es hat ja Zeit.", author: "Heinz Erhardt" },
+  { text: "Ich bin das Ende der Nahrungskette. Ich bin Brot.", author: "Bernd das Brot" },
+  { text: "Der beste Weg, die Zukunft vorherzusagen, ist, sie selbst zu bauen.", author: "Alan Kay" },
+  { text: "Träume groß. Fang klein an. Aber fang an.", author: "unbekannt" },
+  { text: "Erfolg ist die Fähigkeit, von einem Misserfolg zum nächsten zu gehen, ohne die Begeisterung zu verlieren.", author: "Winston Churchill" },
+  { text: "Logik bringt dich von A nach B. Fantasie bringt dich überall hin.", author: "Albert Einstein (mal wieder)"},
+  { text: "Alle sagten: Das geht nicht. Dann kam einer, der wusste das nicht – und hat’s gemacht.", author: "unbekannter Schlauer" },
+  { text: "Der Mensch ist das einzige Lebewesen, das einen Baum fällt, daraus Papier macht und dann ‚Rettet die Bäume‘ draufdruckt.", author: "Alan Kay" },
+  { text: "42.", author: "aus Per Anhalter durch die Galaxis" },
+  { text: "Ich denke, also bin ich … verwirrt.", author: "verwirrter Unbekannter" },
+  { text: "Ich bin multitaskingfähig – ich kann gleichzeitig nichts tun und dabei an Kuchen denken.", author: "" },
+  { text: "We need men who can dream of things that never were, and ask why not.", author: "John F. Kennedy" },
+  { text: "Möge die Macht mit dir sein!", author: "aus Star Wars Episode V" },
+  { text: "Bis zur Unendlichkeit – und noch viel weiter!", author: "aus Toy Story " },
+  { text: "Mit großer Macht kommt große Verantwortung.", author: "Spider-Man" },
+  { text: "Manche Menschen wollen die Welt einfach brennen sehen.", author: "The Dark Knight" },
+  { text: "Ich bin zu alt für diesen Scheiß.", author: "aus Lethal Weapon – Zwei stahlharte Profis" },
+  { text: "If you can’t fly then run, if you can’t run then walk… but keep moving forward.", author: "Martin Luther King Jr." },
+  { text: "Darkness cannot drive out darkness; only light can do that…", author: "Martin Luther King Jr." },
+  { text: "I have a dream…", author: "Martin Luther King Jr." },
+  { text: "Zwei Dinge sind unendlich: das Universum und die menschliche Dummheit – aber beim Universum bin ich mir nicht ganz sicher.", author: "Albert Einstein" },
+  { text: "Wer ein Warum zum Leben hat, erträgt fast jedes Wie.", author: "Friedrich Nietzsche" },
+  { text: "Ich weiß, dass ich nichts weiß.", author: "Sokrates" },
+  { text: "Tu es oder tu es nicht. Es gibt kein Versuchen.", author: "Meister Yoda" },
+  { text: "Du musst nicht großartig sein, um anzufangen. Aber du musst anfangen, um großartig zu werden.", author: "Zig Ziglar" },
+  { text: "Scheitern ist einfach nur ein Umweg, nicht das Ende.", author: "Autor unbekannt, aber wahr" },
+  { text: "Die beste Zeit, einen Baum zu pflanzen, war vor 20 Jahren. Die zweitbeste Zeit ist jetzt.", author: "Chinesisches Sprichwort" },
+  { text: "Selbst der längste Weg beginnt mit dem ersten Schritt.", author: "Laozi (Laotse)" },
+  { text: "Jeder ist ein Genie! Aber wenn Du einen Fisch danach beurteilst, ob er auf einen Baum klettern kann, wird er sein ganzes Leben glauben, dass er dumm ist.", author: "Albert Einstein" }, 
+  { text: "Gib niemals einen Traum auf, nur weil es lange dauert, ihn zu verwirklichen. Die Zeit vergeht sowieso.", author: "Earl Nightingale" },
+  { text: "Sieger geben niemals auf, und wer aufgibt, wird niemals siegen.", author: "Vince Lombardi" },
+  { text: "Manchmal muss man das Gute loslassen, um das Großartige zu erreichen.", author: "John D. Rockefeller" },
+  { text: "Gib niemals auf. Außer du willst was wirklich Großes erschaffen. Dann fang nochmal neu an.", author: "Gefunden bei Reden mit einer Maschine, aus einer Konversation jenseits des Menschlichen." }
+
+
+
+
+];
+const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+document.getElementById("quote").textContent = `"${randomQuote.text}"`;
+document.getElementById("author").textContent = `– ${randomQuote.author}`;
+
+    function toggleTheme() {
+      document.body.classList.toggle("light-mode");
+    }
+
+    function showTime() {
+      alert(new Date().toLocaleTimeString());
+    }
+
+    function updateClock() {
+      const clock = document.getElementById("clock");
+      if (clock) clock.textContent = new Date().toLocaleTimeString();
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    function saveTodo() {
+      const todoHTML = document.getElementById("todo-list").innerHTML;
+      localStorage.setItem("todo", todoHTML);
+      alert("Aufgaben gespeichert!");
+    }
+
+    window.addEventListener("load", () => {
+      const savedTodo = localStorage.getItem("todo");
+      if (savedTodo) document.getElementById("todo-list").innerHTML = savedTodo;
+      loadShortcuts();
+    });
+
+    function loadShortcuts() {
+      const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]");
+      const ul = document.getElementById("shortcut-ul");
+      ul.innerHTML = "";
+      shortcuts.forEach((s, i) => {
+        const entry = document.createElement("div");
+        entry.className = "shortcut-entry";
+        entry.innerHTML = `<img src="${s.icon || 'https://www.google.com/s2/favicons?domain=' + s.url}" alt="${s.name}"><span>${s.name}</span><button class='more-btn' onclick='editShortcut(${i})'>⋯</button>`;
+        ul.appendChild(entry);
+      });
+    }
+
+    function addShortcutDialog() {
+      currentEdit = -1;
+      document.getElementById("shortcutName").value = "";
+      document.getElementById("shortcutURL").value = "";
+      document.getElementById("shortcutDialog").showModal();
+    }
+
+    let currentEdit = -1;
+
+    function editShortcut(index) {
+      const shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]");
+      const s = shortcuts[index];
+      currentEdit = index;
+      document.getElementById("shortcutName").value = s.name;
+      document.getElementById("shortcutURL").value = s.url;
+      document.getElementById("shortcutDialog").showModal();
+    }
+
+    function submitShortcutDialog() {
+      const name = document.getElementById("shortcutName").value.trim();
+      const url = document.getElementById("shortcutURL").value.trim();
+      const file = document.getElementById("shortcutIcon").files[0];
+
+      if (!name || !url) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const icon = file ? reader.result : null;
+        saveShortcut(name, url, icon);
+      };
+      if (file) reader.readAsDataURL(file);
+      else saveShortcut(name, url, null);
+
+      document.getElementById("shortcutDialog").close();
+    }
+
+    function saveShortcut(name, url, icon) {
+      let shortcuts = JSON.parse(localStorage.getItem("shortcuts") || "[]");
+      const obj = { name, url, icon };
+      if (currentEdit >= 0) shortcuts[currentEdit] = obj;
+      else shortcuts.push(obj);
+      localStorage.setItem("shortcuts", JSON.stringify(shortcuts));
+      loadShortcuts();
+    }
+  </script>
+</body>
+</html>
