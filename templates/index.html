@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <title>Charvis Assistant GUI</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 2rem auto; padding: 1rem; }
+    textarea, input { width: 100%; box-sizing: border-box; margin: 0.5rem 0; }
+    button { padding: 0.6rem 1rem; margin-right: 0.5rem; }
+    #result, #transcript { white-space: pre-wrap; margin-top: 1rem; padding: 1rem; background: #f4f4f4; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>Charvis Browser-UI</h1>
+  <p>Status: <strong>{{ status }}</strong></p>
+
+  <label for="commandInput">Textbefehl eingeben:</label>
+  <textarea id="commandInput" rows="3" placeholder="z.B. öffne firefox"></textarea>
+  <button id="sendButton">Senden</button>
+  <button id="sttButton">Spracheingabe starten</button>
+
+  <div id="result">
+    <p><strong>Letzter Befehl:</strong> {{ last_command }}</p>
+    <p><strong>Antwort:</strong> {{ last_response }}</p>
+    <p><strong>Transkript:</strong> {{ last_transcript }}</p>
+  </div>
+
+  <script>
+    const sendButton = document.getElementById("sendButton");
+    const sttButton = document.getElementById("sttButton");
+    const commandInput = document.getElementById("commandInput");
+    const resultDiv = document.getElementById("result");
+
+    async function postJson(url, data) {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      return response.json();
+    }
+
+    function updateResult(data) {
+      resultDiv.innerHTML = `
+        <p><strong>Letzter Befehl:</strong> ${data.command || commandInput.value}</p>
+        <p><strong>Antwort:</strong> ${data.message}</p>
+        ${data.transcript ? `<p><strong>Transkript:</strong> ${data.transcript}</p>` : ""}
+      `;
+    }
+
+    sendButton.addEventListener("click", async () => {
+      const command = commandInput.value.trim();
+      if (!command) return;
+      const data = await postJson("/api/command", { command });
+      updateResult({ ...data, command });
+    });
+
+    sttButton.addEventListener("click", async () => {
+      resultDiv.textContent = "Spracheingabe läuft... Halte NUMPAD-0 gedrückt.";
+      const data = await postJson("/api/stt", {});
+      updateResult(data);
+      if (data.transcript) {
+        commandInput.value = data.transcript;
+      }
+    });
+  </script>
+</body>
+</html>
