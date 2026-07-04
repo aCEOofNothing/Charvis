@@ -18,17 +18,41 @@ with open(SETTINGS, "r") as file:
 
 #-----Grundlogik-----
 
-    print("♾️    Charvis Ist Bereit!", end="\n\n")
+print("♾️    Charvis Ist Bereit!", end="\n\n")
+
+def get_input(mode):
+    if mode == "speech":
+        return speech.listen()
+    elif mode == "terminal":
+        return input("> ")
+
+mode = settings["eingabemodus"]
+if mode == "speech":
     print("Halte NUMPAD-0 zum Sprechen...")
+
 while True:
+    text = get_input(mode)
 
+    if "eingabe" in text:
+        if "sprache" in text:
+            mode = "speech"
+            print("Zu Spracheingabe gewechselt")
+            print("Halte NUMPAD-0 zum Sprechen...")
+            settings["eingabemodus"] = "speech"
+            with open(SETTINGS, "w") as file:
+                json.dump(settings, file, indent=4)
+        elif "terminal" in text:
+            mode = "terminal"
+            print("Zu Terminaleingabe gewechselt")
+            settings["eingabemodus"] = "terminal"
+            with open(SETTINGS, "w") as file:
+                json.dump(settings, file, indent=4)
+        else:
+            print("❌ Bitte gib an, welchen Eingabemodus du öffnen möchtest ('Sprache' oder 'Terminal')")
 
-    text=speech.listen()
-
-    core.handle_command(text)
-        
+    else:
+        core.handle_command(text)
     print("------")
-
 
 
 

@@ -59,4 +59,5 @@ def listen():
     text = "".join(s.text for s in segments)
 
     print("➡️", text)
+    text = text.lower()
     return(text)

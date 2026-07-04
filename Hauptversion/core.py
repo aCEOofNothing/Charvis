@@ -1,10 +1,8 @@
-import soundcard as sc
-import numpy as np
-from faster_whisper import WhisperModel
 import keyboard
 import subprocess
 import mouse
 import json
+from pathlib import Path
 
 #------Befehle-Logik-----
 
@@ -77,6 +75,31 @@ def handle_command(text):
             found = True
             break
 
+    #Kritische Systembefehle:
+    if "pc" in text:
+        if "herunterfahren" in text:
+            subprocess.run(["shutdown", "/s", "/t", "10"])
+            print("PC wird herhuntergefahren")
+            print("'!' zum abbrechen")
+            found = True
+        elif "neustarten" in text:
+            subprocess.run(["shutdown", "/r", "/t", "10"])
+            print("PC wird neu gestartet")
+            print("'!' zum abbrechen")
+            found = True
+        elif "benutzer abmelden" in text:
+            subprocess.run(["shutdown", "/l"])
+            print("Benutzer wurde abgemeldet")
+            found = True
+        elif "ruhezustand" in text:
+            subprocess.run(["shutdown", "/h"])
+            print("PC in Ruhezustand versetzt")
+            found = True
+    if "!" in text or "abbrechen" in text or "stopp" in text:
+        subprocess.run(["shutdown", "/a"])
+        print("Aktion abgebrochen (Funktioniert nur bei bestimmten Befehlen)")
+        found = True
+
     global wachhundmodus
 
     if "wachhundmodus aus" in text:
@@ -102,6 +125,43 @@ def handle_command(text):
         if "beenden" in text:
             print("Einstellung geschlossen")
             return
+        
+    if "todo" in text.replace(" ", "").replace("-", ""):
+        found = True
+        BASE_DIR = Path(__file__).parent
+        SETTINGS = BASE_DIR / "data" / "todo.json"
+        with open(SETTINGS, "r") as file:
+            alle_aufgaben = json.load(file)
+            alle_aufgaben = alle_aufgaben[0]
+
+        if "erledigt" in text:
+            print("Hier sind alle erledigten ToDos:", end="\n\n")
+            for nummer, details in alle_aufgaben.items():
+                if details.get("Status") == "Erledigt":
+                    if "debug" in text:
+                        print(f"Debuginfo (interne Nummer): {nummer}")
+                    print(f"{details["Aufgabe"]} ({details["Status"]})")
+                    print(f"{details["Text"]}")
+                    print("")
+
+        elif "alle" in text:
+            print("Hier sind alle ToDos:", end="\n\n")
+            for nummer, details in alle_aufgaben.items():
+                if "debug" in text:
+                    print(f"Debuginfo (interne Nummer): {nummer}")
+                print(f"{details["Aufgabe"]} ({details["Status"]})")
+                print(f"{details["Text"]}")
+                print("")
+
+        else:
+            print("Hier sind alle zu erledigenden ToDos:", end="\n\n")
+            for nummer, details in alle_aufgaben.items():
+                if details.get("Status") == "Nicht erledigt":
+                    if "debug" in text:
+                        print(f"Debuginfo (interne Nummer): {nummer}")
+                    print(f"{details["Aufgabe"]} ({details["Status"]})")
+                    print(f"{details["Text"]}")
+                    print("")
         
 
     if not found:

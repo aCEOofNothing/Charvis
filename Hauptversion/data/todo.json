@@ -1,0 +1,64 @@
+[   
+    {
+        "1": {
+            "Aufgabe": "Einkaufen gehen",
+            "Dringlichkeit": "Hoch",
+            "Text": "Milch, Brot, Eier und Kaffee im Supermarkt besorgen.",
+            "Status": "Nicht erledigt"
+        },
+        "2": {
+            "Aufgabe": "Code-Review",
+            "Dringlichkeit": "Mittel",
+            "Text": "Das neue Python-Skript von Max auf Fehler prüfen.",
+            "Status": "Erledigt"
+        },
+        "3": {
+            "Aufgabe": "Backup erstellen",
+            "Dringlichkeit": "Hoch",
+            "Text": "Vollständige Sicherung der Projektdaten auf die externe Festplatte.",
+            "Status": "Nicht erledigt"
+        },
+        "4": {
+            "Aufgabe": "Fitnessstudio",
+            "Dringlichkeit": "Niedrig",
+            "Text": "60 Minuten Cardio- und Krafttraining absolvieren.",
+            "Status": "Erledigt"
+        },
+        "5": {
+            "Aufgabe": "Rechnung bezahlen",
+            "Dringlichkeit": "Hoch",
+            "Text": "Die Internetrechnung für diesen Monat per Online-Banking anweisen.",
+            "Status": "Nicht erledigt"
+        },
+        "6": {
+            "Aufgabe": "Pflanzen gießen",
+            "Dringlichkeit": "Niedrig",
+            "Text": "Alle Zimmerpflanzen und die Kräuter auf dem Balkon wässern.",
+            "Status": "Nicht erledigt"
+        },
+        "7": {
+            "Aufgabe": "Arzttermin vereinbaren",
+            "Dringlichkeit": "Mittel",
+            "Text": "Beim Zahnarzt anrufen und einen Termin zur Kontrolle ausmachen.",
+            "Status": "Erledigt"
+        },
+        "8": {
+            "Aufgabe": "Wäsche waschen",
+            "Dringlichkeit": "Niedrig",
+            "Text": "Dunkle Wäsche sortieren, waschen und aufhängen.",
+            "Status": "Nicht erledigt"
+        },
+        "9": {
+            "Aufgabe": "Präsentation vorbereiten",
+            "Dringlichkeit": "Hoch",
+            "Text": "Folien für das Meeting am Montag fertigstellen und Struktur prüfen.",
+            "Status": "Nicht erledigt"
+        },
+        "10": {
+            "Aufgabe": "Zimmer aufräumen",
+            "Dringlichkeit": "Mittel",
+            "Text": "Schreibtisch abwischen und alte Dokumente in Ordner einsortieren.",
+            "Status": "Erledigt"
+        }
+    }
+]
