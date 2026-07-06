@@ -1,27 +1,3 @@
-# assistant_core.py
-import subprocess
-import keyboard
-import numpy as np
-import soundcard as sc
-from faster_whisper import WhisperModel
-
-fs = 16000
-model = WhisperModel("small", device="cpu")
-mic = sc.default_microphone()
-
-COMMANDS = {
-    "firefox privat": ("C:\\Program Files\\Mozilla Firefox\\firefox.exe", ["-private-window"]),
-    "firefox": ("C:\\Program Files\\Mozilla Firefox\\firefox.exe", []),
-    "notion": ("C:\\Users\\maels\\AppData\\Local\\Programs\\Notion\\Notion.exe", []),
-    "spotify": ("C:\\Users\\maels\\AppData\\Roaming\\Spotify\\Spotify.exe", []),
-    "explorer": ("C:\\Windows\\explorer.exe", []),
-    "signal": ("C:\\Users\\maels\\AppData\\Local\\Programs\\signal-desktop\\Signal.exe", []),
-    "cortex": ("C:\\Program Files (x86)\\Razer\\Razer Cortex\\RazerCortex.exe", []),
-    "steam": ("C:\\Program Files (x86)\\Steam\\steam.exe", []),
-    "terminal": ("C:\\Program Files\\WindowsApps\\Microsoft.WindowsTerminal_1.24.11321.0_x64__8wekyb3d8bbwe\\WindowsTerminal.exe", []),
-    "vscode": ("C:\\Users\\maels\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe", []),
-}
-
 def handle_command(text: str) -> dict:
     original = text.strip()
     text = original.lower().strip()

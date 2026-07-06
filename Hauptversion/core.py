@@ -4,6 +4,7 @@ import mouse
 import json
 from pathlib import Path
 
+
 #------Befehle-Logik-----
 
 commands = {
@@ -32,8 +33,11 @@ def handle_command(text):
         print("fuck you")
         return("fuck you")
 
+    found = False
+
     for trigger in ["schreibe", "schreib", "tippe", "tip"]: #Sprech-Einfüg-Funktion
         if text.startswith(trigger):
+            found = True
             print("⌨️ Tippe Text...")
             to_type = orginal_text[len(trigger):].strip().strip(",.?!")
             if to_type:
@@ -43,9 +47,12 @@ def handle_command(text):
                 print("⚠️ Nichts zum Schreiben erkannt")
             return #teständerung
 
-    found = False
+    if "hallo" in text: #Hallo sagen
+        print("Hallo Meister!")
+        found = True
 
     if any(word in text for word in ("gaming", "videospiel", "freizeit")): #Gamingmodus
+        found = True
         print("🎮 Gamingmodus wird gestartet...")
 
         gaming_apps = [
@@ -100,7 +107,7 @@ def handle_command(text):
         print("Aktion abgebrochen (Funktioniert nur bei bestimmten Befehlen)")
         found = True
 
-    global wachhundmodus
+    global wachhundmodus #Wachhundmodus
 
     if "wachhundmodus aus" in text:
         wachhundmodus=False
@@ -113,7 +120,7 @@ def handle_command(text):
         print("Wachhundmodus geöffnet")
         found = True
 
-    if "einstellungen" in text:
+    if "einstellungen" in text: #Einstellungen
         found = True
         print("Schnelleinstellungsmöglichkeiten:"
         "Eingabemodus: Sprache | Text"
@@ -126,7 +133,28 @@ def handle_command(text):
             print("Einstellung geschlossen")
             return
         
-    if "todo" in text.replace(" ", "").replace("-", ""):
+    if text.startswith("?") or "Was kannst du?" in text or "Hilfe" in text: #Hilfe
+        found = True
+        print("Ich kann mehr als du!")
+        print("Hier sind alle meine Befehle und Funktionen:")
+        print("")
+        funktionen = {
+            "Transkripieren": "Sag einfach: 'Schreibe ...'",
+            "Gamingmodus öffnen": "'Gamingmodus'",
+            "Bestimmtes Programm öffnen": "Name des Programms",
+            "PC Befehle: herunterfahren, neustarten, Benutzer abmelden, Ruhezustand": "'PC ...'",
+            "Abbrechen (funktioniert nur bei bestimmten Befehlen)": "'!' oder 'Abbrechen' oder 'Stopp'",
+            "Wachhundmodus": "'Wachhundmodus",
+            "Einstellungen": "'Einstellungen'",
+            "Hilfeinformation / Befehlsübersicht": "'?' oder 'Was kannst du?' oder 'Hilfe'",
+            "Zu erledingende ToDos ausgeben": "'ToDo'",
+            "Erledigte ToDos ausgeben": "'Erledigte ToDos",
+            "Alle ToDos ausgeben": "'alle ToDos'"
+        }
+        for keyword, funktions_beschreibung in funktionen.items():
+            print(keyword, ":", funktions_beschreibung)
+        
+    if "todo" in text.replace(" ", "").replace("-", ""): #ToDo
         found = True
         BASE_DIR = Path(__file__).parent
         SETTINGS = BASE_DIR / "data" / "todo.json"
@@ -172,3 +200,5 @@ def handle_command(text):
 def wachhund():
     if wachhundmodus==True:
         print("Wachhund liegt auf der Lauer!")
+
+    
