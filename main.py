@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 import core
-import speech
+import Input.speech as speech
 
 
 #------Einstellungen importieren------
