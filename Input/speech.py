@@ -23,7 +23,7 @@ def listen():
         settings = json.load(file)
     #--Einstellungen importieren--
 
-    keyboard.wait(settings["trigger_key"])
+    keyboard.wait(settings["triggerkey"])
 
     print("🎤 Aufnahme...")
 
@@ -31,7 +31,7 @@ def listen():
 
     with mic.recorder(samplerate=fs) as recorder:
 
-        while keyboard.is_pressed(settings["trigger_key"]):
+        while keyboard.is_pressed(settings["triggerkey"]):
             audio.append(recorder.record(4096))
 
     if not audio:
