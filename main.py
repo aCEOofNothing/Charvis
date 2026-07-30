@@ -26,7 +26,7 @@ def process_input(text):
     global mode
     if "öffne die oberfläche" in text:
         subprocess.Popen(["Python", "gui/flaskgui.py"])
-        webbrowser.open("http://127.0.0.1:5000")
+        webbrowser.open("http://127.0.0.1:5000", new=1)
 
     if "eingabe" in text:
         if "sprache" in text:
