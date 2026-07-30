@@ -1,4 +1,4 @@
 {
-    "eingabemodus": "speech",
-    "trigger_key": "num 0"
+    "eingabemodus": "terminal",
+    "triggerkey": "num 0"
 }

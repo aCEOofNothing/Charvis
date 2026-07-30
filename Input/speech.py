@@ -17,7 +17,7 @@ mic = sc.default_microphone()
 def listen():
 
     #--Einstellungen importieren--
-    BASE_DIR = Path(__file__).parent
+    BASE_DIR = Path(__file__).parent.parent
     SETTINGS = BASE_DIR / "data" / "settings.json"
     with open(SETTINGS, "r") as file:
         settings = json.load(file)

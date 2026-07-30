@@ -3,6 +3,8 @@ import subprocess
 import mouse
 import json
 from pathlib import Path
+import pyautogui
+import ctypes
 
 
 #------Befehle-Logik-----
@@ -102,10 +104,28 @@ def handle_command(text):
             subprocess.run(["shutdown", "/h"])
             print("PC in Ruhezustand versetzt")
             found = True
-    if "!" in text or "abbrechen" in text or "stopp" in text:
-        subprocess.run(["shutdown", "/a"])
-        print("Aktion abgebrochen (Funktioniert nur bei bestimmten Befehlen)")
+
+
+    if "anhalten" in text or "pause" in text or "weiter" in text:
+        pyautogui.press("playpause")
         found = True
+
+    if "nächstes" in text or "überspringen" in text:
+        pyautogui.press("next track")
+        found = True
+
+    if "zurück" in text:
+        pyautogui.press("previous track")
+        found = True
+
+    if "musik aus" in text:
+        keyboard.send("stop media")
+        found = True
+
+    if "einfügen" in text:
+        keyboard.send("ctrl+v")
+        found = True
+
 
     global wachhundmodus #Wachhundmodus
 
@@ -191,6 +211,10 @@ def handle_command(text):
                     print(f"{details["Text"]}")
                     print("")
         
+    if "!" in text or "abbrechen" in text or "stopp" in text:
+        subprocess.run(["shutdown", "/a"])
+    print("Aktion abgebrochen (Funktioniert nur bei bestimmten Befehlen)")
+    found = True
 
     if not found:
         print("❌ Kein passender Befehl gefunden")
