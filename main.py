@@ -2,6 +2,8 @@
 
 import json
 from pathlib import Path
+import webbrowser
+import subprocess
 
 
 import core
@@ -22,6 +24,10 @@ print("♾️    Charvis Ist Bereit!", end="\n\n")
 
 def process_input(text):
     global mode
+    if "öffne die oberfläche" in text:
+        subprocess.Popen(["Python", "gui/flaskgui.py"])
+        webbrowser.open("http://127.0.0.1:5000")
+
     if "eingabe" in text:
         if "sprache" in text:
                 mode = "speech"
