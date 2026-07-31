@@ -1,6 +1,6 @@
 # flask_gui.py
 
-from assistant_core import handle_command, record_audio, transcribe_audio
+from core import handle_command, record_audio, transcribe_audio
 from flask import Flask, request, jsonify, render_template
 
 app = Flask(__name__, template_folder="templates", static_folder="static")

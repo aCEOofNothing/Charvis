@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import json
 from pathlib import Path
 
@@ -48,7 +48,11 @@ def einstellungen():
             json.dump(settings, file, indent=4)
 
     return render_template("einstellungen.html", preference_triggerkey = preference_triggerkey)
-    
+
+
+@app.route("/health")
+def health():
+    return jsonify({"message": "Hello world! I'm the web UI of the Jarvis System.", "app": "Charvis Web UI", "status": "running", "author": "Mael"})
 
 
 if __name__ == "__main__":

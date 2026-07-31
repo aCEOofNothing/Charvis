@@ -1,3 +1,18 @@
+
+
+
+
+
+
+# "Abbrechen"-Funktion muss gefixt werden
+
+
+
+
+
+
+
+
 import keyboard
 import subprocess
 import mouse
