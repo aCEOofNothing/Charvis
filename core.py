@@ -21,6 +21,8 @@ from pathlib import Path
 import pyautogui
 import ctypes
 
+from modules.befehl_zu_bestimmter_tastendruck_modul.befehl_zu_bestimmter_tastendruck import befehl_zu_bestimmter_tastendruck
+
 
 #------Befehle-Logik-----
 
@@ -225,6 +227,9 @@ def handle_command(text):
                     print(f"{details["Aufgabe"]} ({details["Status"]})")
                     print(f"{details["Text"]}")
                     print("")
+
+    if "drücke" in text:
+        befehl_zu_bestimmter_tastendruck(text)
         
     if "!" in text or "abbrechen" in text or "stopp" in text:
         subprocess.run(["shutdown", "/a"])

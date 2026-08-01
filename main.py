@@ -19,7 +19,7 @@ import requests
 
 
 import core
-import Input.speech as speech
+import speech
 
 
 #------Einstellungen importieren------
