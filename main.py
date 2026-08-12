@@ -1,14 +1,3 @@
-
-
-
-
-# Moduswechsel muss gefixt werden
-
-
-
-
-
-
 #-----Grundanweisungen-----
 
 import json
@@ -19,20 +8,29 @@ import requests
 
 
 import core
-import speech
+from input.speech import listen
 
+
+print("♾️    Charvis Ist Bereit!", end="\n\n")
 
 #------Einstellungen importieren------
-BASE_DIR = Path(__file__).parent
-SETTINGS = BASE_DIR / "data" / "settings.json"
-with open(SETTINGS, "r") as file:
-    settings = json.load(file)
 
+def import_settings():
+    BASE_DIR = Path(__file__).parent
+    SETTINGS = BASE_DIR / "data" / "settings.json"
+    with open(SETTINGS, "r") as file:
+        settings = json.load(file)
+    return settings
 
+def save_settings(settings):
+    BASE_DIR = Path(__file__).parent
+    SETTINGS = BASE_DIR / "data" / "settings.json"
+    with open(SETTINGS, "w") as file:
+        json.dump(settings, file, indent=4)
 
 #-----Grundlogik-----
 
-print("♾️    Charvis Ist Bereit!", end="\n\n")
+
 
 
 
@@ -53,12 +51,9 @@ def is_flask_running():
 def process_input(text):
     global mode
 
-    BASE_DIR = Path(__file__).parent
-    SETTINGS = BASE_DIR / "data" / "settings.json"
-    with open(SETTINGS, "r") as file:
-        settings = json.load(file)
+    settings = import_settings()
     last_mode = mode
-    mode = settings["triggerkey"]
+    mode = settings["eingabemodus"]
 
     if "öffne die oberfläche" in text:
         flask_status = is_flask_running()
@@ -73,20 +68,18 @@ def process_input(text):
             print("Oberfläche wird geöffnet")
             webbrowser.open("http://127.0.0.1:5000", new=1)
 
-    if "eingabe" in text:
+    elif "eingabe" in text:
         if "sprache" in text:
             mode = "speech"
             print("Zu Spracheingabe gewechselt")
             print("Halte NUMPAD-0 zum Sprechen...")
             settings["eingabemodus"] = "speech"
-            with open(SETTINGS, "w") as file:
-                json.dump(settings, file, indent=4)
+            save_settings(settings)
         elif "terminal" in text:
             mode = "terminal"
             print("Zu Terminaleingabe gewechselt")
             settings["eingabemodus"] = "terminal"
-            with open(SETTINGS, "w") as file:
-                json.dump(settings, file, indent=4)
+            save_settings(settings)
         else:
             print("❌ Bitte gib an, welchen Eingabemodus du öffnen möchtest ('Sprache' oder 'Terminal')")
 
@@ -105,12 +98,12 @@ def process_input(text):
 
 def get_input(mode):
     if mode == "speech":
-        return speech.listen()
+        return listen()
     elif mode == "terminal":
         return input("> ")
 
 
-global mode
+settings = import_settings()
 mode = settings["eingabemodus"]
 if mode == "speech":
     print("Halte NUMPAD-0 zum Sprechen...")

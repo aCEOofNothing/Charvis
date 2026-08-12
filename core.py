@@ -20,6 +20,7 @@ import json
 from pathlib import Path
 import pyautogui
 import ctypes
+import os
 
 from modules.befehl_zu_bestimmter_tastendruck_modul.befehl_zu_bestimmter_tastendruck import befehl_zu_bestimmter_tastendruck
 
@@ -230,11 +231,15 @@ def handle_command(text):
 
     if "drücke" in text:
         befehl_zu_bestimmter_tastendruck(text)
+
+    if "feuere ein laserstrahl" in text:
+        os.startfile("laser_soundeffect.mp3")
+        found = True
         
     if "!" in text or "abbrechen" in text or "stopp" in text:
         subprocess.run(["shutdown", "/a"])
-    print("Aktion abgebrochen (Funktioniert nur bei bestimmten Befehlen)")
-    found = True
+        print("Aktion abgebrochen (Funktioniert nur bei bestimmten Befehlen)")
+        found = True
 
     if not found:
         print("❌ Kein passender Befehl gefunden")
