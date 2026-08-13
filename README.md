@@ -1,12 +1,11 @@
 # Charvis
-Charvis is a modular assistant system. It already has voiceinput and commands.
+Charvis is a little assistant system.
 
-## Features (planned)
-- Voice input + speech recognition
+## Features
+- Voice input
 - Command execution (system + apps)
-- Modular plugin system
-- Optional UI overlay
+- Simple web UI
 - Python-based core
 
-# JAPADAPADU!
+# JAPADAPADUU!
 Geil Junge!

@@ -144,24 +144,10 @@ def handle_command(text):
         keyboard.send("ctrl+v")
         found = True
 
-
-    global wachhundmodus #Wachhundmodus
-
-    if "wachhundmodus aus" in text:
-        wachhundmodus=False
-        print("Wachhundmodus geschlossen")
-        found = True
-
-    if "wachhundmodus" in text:
-        print("W")
-        wachhundmodus=True
-        print("Wachhundmodus geöffnet")
-        found = True
-
     if "einstellungen" in text: #Einstellungen
         found = True
         print("Schnelleinstellungsmöglichkeiten:"
-        "Eingabemodus: Sprache | Text"
+        "Eingabemodus: Sprache | Terminal"
         ""
         "-> Um die Einstellungen zu ändern, sage einfach die Einstellungskategurie und die Einstellungsmöglichkeit die du auswählen willst."
         ""
@@ -182,7 +168,6 @@ def handle_command(text):
             "Bestimmtes Programm öffnen": "Name des Programms",
             "PC Befehle: herunterfahren, neustarten, Benutzer abmelden, Ruhezustand": "'PC ...'",
             "Abbrechen (funktioniert nur bei bestimmten Befehlen)": "'!' oder 'Abbrechen' oder 'Stopp'",
-            "Wachhundmodus": "'Wachhundmodus",
             "Einstellungen": "'Einstellungen'",
             "Hilfeinformation / Befehlsübersicht": "'?' oder 'Was kannst du?' oder 'Hilfe'",
             "Zu erledingende ToDos ausgeben": "'ToDo'",
@@ -236,7 +221,7 @@ def handle_command(text):
         os.startfile("laser_soundeffect.mp3")
         found = True
         
-    if "!" in text or "abbrechen" in text or "stopp" in text:
+    if "!" == text or "abbrechen" in text or "stopp" in text:
         subprocess.run(["shutdown", "/a"])
         print("Aktion abgebrochen (Funktioniert nur bei bestimmten Befehlen)")
         found = True
@@ -244,10 +229,3 @@ def handle_command(text):
     if not found:
         print("❌ Kein passender Befehl gefunden")
         return
-
-
-def wachhund():
-    if wachhundmodus==True:
-        print("Wachhund liegt auf der Lauer!")
-
-    
