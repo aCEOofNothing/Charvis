@@ -46,8 +46,6 @@ def is_flask_running():
         return "NOT_RUNNING"
 
 
-
-
 def process_input(text):
     global mode
 
@@ -96,6 +94,7 @@ def process_input(text):
         core.handle_command(text)
     print("------")
 
+
 def get_input(mode):
     if mode == "speech":
         return listen()
@@ -112,7 +111,7 @@ while True:
     text = get_input(mode)
     process_input(text)
 
-    
+
 
 
 

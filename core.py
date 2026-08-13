@@ -232,7 +232,7 @@ def handle_command(text):
     if "drücke" in text:
         befehl_zu_bestimmter_tastendruck(text)
 
-    if "feuere ein laserstrahl" in text:
+    if "feuere ein laserstrahl" in text or "feuere ein laser-strahl" in text:
         os.startfile("laser_soundeffect.mp3")
         found = True
         
