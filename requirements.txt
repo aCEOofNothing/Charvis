@@ -1,3 +1,15 @@
 flask
 json
 pathlib
+webbrowser
+subprocess
+requests
+keyboard
+mouse
+pyautogui
+ctypes
+os
+faster_whisper
+soundcard
+numpy
+msal

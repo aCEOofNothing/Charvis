@@ -5,46 +5,17 @@ from pathlib import Path
 import webbrowser
 import subprocess
 import requests
+import threading
 
 
 import core
 from input.speech import listen
+from  assets import is_flask_running, import_settings, save_settings
 
 
 print("♾️    Charvis Ist Bereit!", end="\n\n")
 
-#------Einstellungen importieren------
-
-def import_settings():
-    BASE_DIR = Path(__file__).parent
-    SETTINGS = BASE_DIR / "data" / "settings.json"
-    with open(SETTINGS, "r") as file:
-        settings = json.load(file)
-    return settings
-
-def save_settings(settings):
-    BASE_DIR = Path(__file__).parent
-    SETTINGS = BASE_DIR / "data" / "settings.json"
-    with open(SETTINGS, "w") as file:
-        json.dump(settings, file, indent=4)
-
 #-----Grundlogik-----
-
-
-
-
-
-def is_flask_running():
-    try:
-        r = requests.get("http://127.0.0.1:5000/health", timeout=1)
-        if r.status_code == 200:
-            data = r.json()
-            if data.get("app") == "Charvis Web UI" and data.get("status") == "running":
-                return "RUNNING"
-        return "OTHER_APP_RUNNING"
-    except (requests.RequestException, ValueError):
-        return "NOT_RUNNING"
-
 
 def process_input(text):
     global mode
@@ -67,19 +38,29 @@ def process_input(text):
             webbrowser.open("http://127.0.0.1:5000", new=1)
 
     elif "eingabe" in text:
-        if "sprache" in text:
-            mode = "speech"
+        if "sprach" in text and "terminal" in text:
+            print("Zu Sprach- und Terminaleingabe gewechselt")
+            print("Halte NUMPAD-0 zum Sprechen...")
+            mode = "speech+terminal"
+            settings["eingabemodus"] = mode
+            save_settings(settings)
+
+
+        elif "sprache" in text:
             print("Zu Spracheingabe gewechselt")
             print("Halte NUMPAD-0 zum Sprechen...")
-            settings["eingabemodus"] = "speech"
+            mode = "speech"
+            settings["eingabemodus"] = mode
             save_settings(settings)
+
         elif "terminal" in text:
-            mode = "terminal"
             print("Zu Terminaleingabe gewechselt")
-            settings["eingabemodus"] = "terminal"
+            mode = "terminal"
+            settings["eingabemodus"] = mode
             save_settings(settings)
+
         else:
-            print("❌ Bitte gib an, welchen Eingabemodus du öffnen möchtest ('Sprache' oder 'Terminal')")
+            print("❌ Bitte gib an, welchen Eingabemodus du öffnen möchtest ('Sprache', 'Terminal' oder 'Sprache und Terminal')")
 
     elif last_mode != mode:
         if mode == "speech":
@@ -98,7 +79,12 @@ def process_input(text):
 def get_input(mode):
     if mode == "speech":
         return listen()
+    
     elif mode == "terminal":
+        return input("> ")
+    
+    elif mode == "speech+terminal":
+        threading.Thread(target=listen, daemon=True).start()
         return input("> ")
 
 
@@ -106,6 +92,11 @@ settings = import_settings()
 mode = settings["eingabemodus"]
 if mode == "speech":
     print("Halte NUMPAD-0 zum Sprechen...")
+
+
+
+
+
 
 while True:
     text = get_input(mode)

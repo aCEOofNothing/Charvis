@@ -21,8 +21,25 @@ from pathlib import Path
 import pyautogui
 import ctypes
 import os
+import json
 
 from modules.befehl_zu_bestimmter_tastendruck_modul.befehl_zu_bestimmter_tastendruck import befehl_zu_bestimmter_tastendruck
+
+
+#------Einstellungen importieren------
+
+def import_settings(path):
+    BASE_DIR = Path(__file__).parent
+    SETTINGS = BASE_DIR/path
+    with open(SETTINGS, "r") as file:
+        settings = json.load(file)
+    return settings
+
+def save_settings(path, settings):
+    BASE_DIR = Path(__file__).parent
+    SETTINGS = BASE_DIR/path
+    with open(SETTINGS, "w") as file:
+        json.dump(settings, file, indent=4)
 
 
 #------Befehle-Logik-----
@@ -71,6 +88,19 @@ def handle_command(text):
         found = True
         return("Hallo Meister!")
 
+    if "komandowort" in text:
+        found = True
+        wakeword = import_settings("data/settings.json")["wakeword"]
+        print(wakeword)
+        if wakeword == True:
+            print("True")
+            return
+        elif wakeword == False:
+            print("False")
+            return
+        else:
+            print("Nix")
+            return
 
     if any(word in text for word in ("gaming", "videospiel", "freizeit")): #Gamingmodus
         found = True
@@ -180,11 +210,8 @@ def handle_command(text):
         
     if "todo" in text.replace(" ", "").replace("-", ""): #ToDo
         found = True
-        BASE_DIR = Path(__file__).parent
-        SETTINGS = BASE_DIR / "data" / "todo.json"
-        with open(SETTINGS, "r") as file:
-            alle_aufgaben = json.load(file)
-            alle_aufgaben = alle_aufgaben[0]
+        settings = import_settings("data" / "todo.json")
+        alle_aufgaben = settings[0]
 
         if "erledigt" in text:
             print("Hier sind alle erledigten ToDos:", end="\n\n")

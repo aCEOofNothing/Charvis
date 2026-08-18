@@ -1,4 +1,5 @@
 {
-    "eingabemodus": "speech",
-    "triggerkey": "num 0"
+    "eingabemodus": "terminal",
+    "triggerkey": "num 0",
+    "wakeword": "False"
 }

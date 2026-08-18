@@ -11,6 +11,7 @@ Charvis is a little assistant system.
 1. Python installieren
 2. Neuste Realeseversion downloaden
 3. Abhängigkeiten installieren
+    -> Sind in requirements.txt aufgelistet
 4. Zum Starten main.py ausführen
 
 # JAPADAPADUU!
