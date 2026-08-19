@@ -10,6 +10,7 @@ from input.speech import listen
 from  assets import is_flask_running, import_settings
 from shared import input_queue
 from input.wakeword import listen_with_wakeword
+from input.terminal import terminal_input
 
 
 print("♾️    Charvis Ist Bereit!", end="\n\n")
@@ -35,10 +36,12 @@ def process_input(text):
 
 speech_thread = None
 wakeword_thread = None
+terminal_thread = None
 
 def get_input():
     global speech_thread
     global wakeword_thread
+    global terminal_thread
 
     settings = import_settings()
     input_options = settings["input"]
@@ -56,8 +59,9 @@ def get_input():
             wakeword_thread.start()
 
     if input_options["terminal"] == True:
-        text = input("> ")
-        input_queue.put(text)
+        if terminal_thread is None or not terminal_thread.is_alive():
+            terminal_thread = threading.Thread(target=terminal_input, daemon=True)
+            terminal_thread.start()
 
 def worker():
     while True:
