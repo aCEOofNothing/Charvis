@@ -13,3 +13,4 @@ faster_whisper
 soundcard
 numpy
 msal
+openwakeword

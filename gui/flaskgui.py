@@ -1,16 +1,16 @@
 from flask import Flask, render_template, request, jsonify
 import json
 from pathlib import Path
+import sys
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(BASE_DIR))
+
+from assets import import_settings, save_settings
 
 #Dokument selbstgeschrieben
 
-
-BASE_DIR = Path(__file__).parent.parent
-SETTINGS = BASE_DIR / "data" / "settings.json"
-with open(SETTINGS, "r") as file:
-    settings = json.load(file)
-
-
+settings = import_settings()
 
 app = Flask(__name__)
 
@@ -18,12 +18,11 @@ app = Flask(__name__)
 def index():
 
     if request.method == "POST":
-        eingabemodus_neu = request.form["eingabemodus_neu"]
-        print(eingabemodus_neu)
-
-        settings["eingabemodus"] = eingabemodus_neu
-        with open(SETTINGS, "w") as file:
-            json.dump(settings, file, indent=4)
+        input_options_changed = request.form.getlist("input_options_value")
+        settings = import_settings()
+        settings["input"]["speech"] = input_options_changed["speech"]
+        settings["input"]["terminal"] = input_options_changed["terminal"]
+        save_settings(settings)
 
     return render_template("index.html")
 
@@ -31,21 +30,17 @@ def index():
 @app.route("/einstellungen", methods=["GET", "POST"])
 def einstellungen():
 
-    DATEI = Path(__file__).parent.parent / "data" / "settings.json"
-    with open (DATEI, "r", encoding="utf-8") as f:
-        daten = json.load(f)
-    preference_triggerkey = daten["triggerkey"]
+    settings = import_settings()
+    preference_triggerkey = settings["triggerkey"]
 
     if request.method == "POST":
-        with open(SETTINGS, "r") as file:
-            settings = json.load(file)
+        settings = import_settings()
 
         triggerkey_neu = request.form["push to talk triggerkey"]
         print(triggerkey_neu)
 
         settings["triggerkey"] = triggerkey_neu
-        with open(SETTINGS, "w") as file:
-            json.dump(settings, file, indent=4)
+        save_settings(settings)
 
     return render_template("einstellungen.html", preference_triggerkey = preference_triggerkey)
 

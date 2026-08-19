@@ -22,8 +22,11 @@ import pyautogui
 import ctypes
 import os
 import json
+import webbrowser
 
 from modules.befehl_zu_bestimmter_tastendruck_modul.befehl_zu_bestimmter_tastendruck import befehl_zu_bestimmter_tastendruck
+from assets import save_settings, import_settings, is_flask_running
+from output.output import output
 
 
 #------Einstellungen importieren------
@@ -67,44 +70,43 @@ def handle_command(text):
     text = orginal_text.lower().strip()
     
     if not text:
-        print("fuck you")
-        return("fuck you")
+        output("fuck you")
 
     found = False
 
     for trigger in ["schreibe", "schreib", "tippe", "tip"]: #Sprech-Einfüg-Funktion
         if text.startswith(trigger):
             found = True
-            print("⌨️ Tippe Text...")
+            output("⌨️ Tippe Text...")
             to_type = orginal_text[len(trigger):].strip().strip(",.?!")
             if to_type:
                 keyboard.write(to_type)
-                print("⌨️ Text getippt: " + to_type)
+                output("⌨️ Text getippt: " + to_type)
             else:
-                print("⚠️ Nichts zum Schreiben erkannt")
+                output("⚠️ Nichts zum Schreiben erkannt")
             return #teständerung
 
     if "hallo" in text: #Hallo sagen
         found = True
-        return("Hallo Meister!")
+        output("Hallo Meister!")
 
     if "komandowort" in text:
         found = True
         wakeword = import_settings("data/settings.json")["wakeword"]
-        print(wakeword)
+        output(wakeword)
         if wakeword == True:
-            print("True")
+            output("True")
             return
         elif wakeword == False:
-            print("False")
+            output("False")
             return
         else:
-            print("Nix")
+            output("Nix")
             return
 
     if any(word in text for word in ("gaming", "videospiel", "freizeit")): #Gamingmodus
         found = True
-        print("🎮 Gamingmodus wird gestartet...")
+        output("🎮 Gamingmodus wird gestartet...")
 
         gaming_apps = [
              "steam",
@@ -115,12 +117,12 @@ def handle_command(text):
         for app in gaming_apps:
                  
             if app not in commands:
-                print(f"❌ {app} existiert nicht im commands-Dictionary")
+                output(f"❌ {app} existiert nicht im commands-Dictionary")
                 continue
 
             path, args = commands[app]
 
-            print(f"🚀 Starte {app}")
+            output(f"🚀 Starte {app}")
             subprocess.Popen([path] + args)
 
         return
@@ -128,7 +130,7 @@ def handle_command(text):
     for keyword, (path, args) in commands.items(): #Einzel-Öffnen
 
         if keyword in text:
-            print(f"🚀 {keyword} wird gestartet...")
+            output(f"🚀 {keyword} wird gestartet...")
             subprocess.Popen([path] + args)
             found = True
             break
@@ -243,10 +245,50 @@ def handle_command(text):
                     print("")
 
     if "drücke" in text:
+        found = True
         befehl_zu_bestimmter_tastendruck(text)
 
+    if "öffne die oberfläche" in text:
+        found = True
+        flask_status = is_flask_running()
+        if flask_status == "OTHER_APP_RUNNING":
+            print("ACHTUNG: Port 5000 ist bereits besetzt, aber nicht von Charvis Web UI")
+            print("Die Web UI kann nicht gestartet werden. Bitte schließe zuerst die andere App und versuche es dann nochmal.")
+        else:
+            if flask_status == "NOT_RUNNING":
+                subprocess.Popen(["python", "gui/flaskgui.py"])
+                print("Flaskserver für Charvis Web UI wird gestartet")
+        
+            print("Oberfläche wird geöffnet")
+            webbrowser.open("http://127.0.0.1:5000", new=1)
+
+    elif "eingabe" in text: #Inputeinstellungen ändern
+        found = True
+        if "sprach" in text and "terminal" in text:
+            print("Zu Sprach- und Terminaleingabe gewechselt")
+            print("Halte NUMPAD-0 zum Sprechen...")
+            mode = "speech+terminal"
+            settings["eingabemodus"] = mode
+            save_settings(settings)
+
+        elif "sprache" in text:
+            print("Zu Spracheingabe gewechselt")
+            print("Halte NUMPAD-0 zum Sprechen...")
+            mode = "speech"
+            settings["eingabemodus"] = mode
+            save_settings(settings)
+
+        elif "terminal" in text:
+            print("Zu Terminaleingabe gewechselt")
+            mode = "terminal"
+            settings["eingabemodus"] = mode
+            save_settings(settings)
+
+        else:
+            print("❌ Bitte gib an, welchen Eingabemodus du öffnen möchtest ('Sprache', 'Terminal' oder 'Sprache und Terminal')")
+
     if "feuere ein laserstrahl" in text or "feuere ein laser-strahl" in text:
-        os.startfile("laser_soundeffect.mp3")
+        os.startfile("../media/laser_soundeffect.mp3")
         found = True
         
     if "!" == text or "abbrechen" in text or "stopp" in text:
@@ -256,4 +298,4 @@ def handle_command(text):
 
     if not found:
         print("❌ Kein passender Befehl gefunden")
-        return
+        return("Nix statt none")

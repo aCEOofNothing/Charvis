@@ -1,5 +1,13 @@
 {
-    "eingabemodus": "terminal",
+    "input": {
+        "speech": true,
+        "terminal": true
+    },
+    "output": {
+        "terminal": true
+    },
     "triggerkey": "num 0",
-    "wakeword": "False"
+    "wakeword": false,
+    "wakeword_word": "hey_jarvis",
+    "autostart_flaskgui": true
 }
