@@ -4,10 +4,11 @@
         "terminal": true
     },
     "output": {
-        "terminal": true
+        "terminal": true,
+        "flaskgui": true
     },
     "triggerkey": "num 0",
-    "wakeword": false,
+    "wakeword": true,
     "wakeword_word": "hey_jarvis",
     "autostart_flaskgui": true
 }

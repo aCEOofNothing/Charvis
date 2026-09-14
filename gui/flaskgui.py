@@ -24,6 +24,8 @@ def index():
         settings["input"]["terminal"] = input_options_changed["terminal"]
         save_settings(settings)
 
+
+
     return render_template("index.html")
 
 
@@ -45,10 +47,15 @@ def einstellungen():
     return render_template("einstellungen.html", preference_triggerkey = preference_triggerkey)
 
 
+@app.route("/output_api", methods=["POST"])
+def output_api():
+    if request.method == "POST":
+        new_output = request.json
+        print("Von Flask:", new_output)
+
 @app.route("/health")
 def health():
     return jsonify({"message": "Hello world! I'm the web UI of the Jarvis System.", "app": "Charvis Web UI", "status": "running", "author": "Mael"})
-
 
 if __name__ == "__main__":
     app.run(debug=True)

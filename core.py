@@ -25,24 +25,8 @@ import json
 import webbrowser
 
 from modules.befehl_zu_bestimmter_tastendruck_modul.befehl_zu_bestimmter_tastendruck import befehl_zu_bestimmter_tastendruck
-from assets import save_settings, import_settings, is_flask_running
+from assets import save_settings, import_settings, is_flask_running, save_data, import_data
 from output.output import output
-
-
-#------Einstellungen importieren------
-
-def import_settings(path):
-    BASE_DIR = Path(__file__).parent
-    SETTINGS = BASE_DIR/path
-    with open(SETTINGS, "r") as file:
-        settings = json.load(file)
-    return settings
-
-def save_settings(path, settings):
-    BASE_DIR = Path(__file__).parent
-    SETTINGS = BASE_DIR/path
-    with open(SETTINGS, "w") as file:
-        json.dump(settings, file, indent=4)
 
 
 #------Befehle-Logik-----
@@ -139,21 +123,21 @@ def handle_command(text):
     if "pc" in text:
         if "herunterfahren" in text:
             subprocess.run(["shutdown", "/s", "/t", "10"])
-            print("PC wird herhuntergefahren")
-            print("'!' zum abbrechen")
+            output("PC wird herhuntergefahren")
+            output("'!' zum abbrechen")
             found = True
         elif "neustarten" in text:
             subprocess.run(["shutdown", "/r", "/t", "10"])
-            print("PC wird neu gestartet")
-            print("'!' zum abbrechen")
+            output("PC wird neu gestartet")
+            output("'!' zum abbrechen")
             found = True
         elif "benutzer abmelden" in text:
             subprocess.run(["shutdown", "/l"])
-            print("Benutzer wurde abgemeldet")
+            output("Benutzer wurde abgemeldet")
             found = True
         elif "ruhezustand" in text:
             subprocess.run(["shutdown", "/h"])
-            print("PC in Ruhezustand versetzt")
+            output("PC in Ruhezustand versetzt")
             found = True
 
 
@@ -179,22 +163,22 @@ def handle_command(text):
 
     if "einstellungen" in text: #Einstellungen
         found = True
-        print("Schnelleinstellungsmöglichkeiten:"
-        "Eingabemodus: Sprache | Terminal"
-        ""
-        "-> Um die Einstellungen zu ändern, sage einfach die Einstellungskategurie und die Einstellungsmöglichkeit die du auswählen willst."
-        ""
-        "Warte auf Antwort... Um das Mnü zu verlassen, sage einfach >Beenden.<")
+        output("Schnelleinstellungsmöglichkeiten:")
+        output("Eingabemodus: Sprache | Terminal")
+        output("")
+        output("-> Um die Einstellungen zu ändern, sage einfach die Einstellungskategurie und die Einstellungsmöglichkeit die du auswählen willst.")
+        output("")
+        output("Warte auf Antwort... Um das Mnü zu verlassen, sage einfach >Beenden.<")
 
         if "beenden" in text:
-            print("Einstellung geschlossen")
+            output("Einstellung geschlossen")
             return
         
     if text.startswith("?") or "Was kannst du?" in text or "Hilfe" in text: #Hilfe
         found = True
-        print("Ich kann mehr als du!")
-        print("Hier sind alle meine Befehle und Funktionen:")
-        print("")
+        output("Ich kann mehr als du!")
+        output("Hier sind alle meine Befehle und Funktionen:")
+        output("")
         funktionen = {
             "Transkripieren": "Sag einfach: 'Schreibe ...'",
             "Gamingmodus öffnen": "'Gamingmodus'",
@@ -208,41 +192,41 @@ def handle_command(text):
             "Alle ToDos ausgeben": "'alle ToDos'"
         }
         for keyword, funktions_beschreibung in funktionen.items():
-            print(keyword, ":", funktions_beschreibung)
+            output(keyword, ":", funktions_beschreibung)
         
     if "todo" in text.replace(" ", "").replace("-", ""): #ToDo
         found = True
-        settings = import_settings("data" / "todo.json")
+        settings = import_data("data/todo.json")
         alle_aufgaben = settings[0]
 
         if "erledigt" in text:
-            print("Hier sind alle erledigten ToDos:", end="\n\n")
+            output('"Hier sind alle erledigten ToDos:", end="\n\n"')
             for nummer, details in alle_aufgaben.items():
                 if details.get("Status") == "Erledigt":
                     if "debug" in text:
-                        print(f"Debuginfo (interne Nummer): {nummer}")
-                    print(f"{details["Aufgabe"]} ({details["Status"]})")
-                    print(f"{details["Text"]}")
-                    print("")
+                        output(f"Debuginfo (interne Nummer): {nummer}")
+                    output(f"{details["Aufgabe"]} ({details["Status"]})")
+                    output(f"{details["Text"]}")
+                    output("")
 
         elif "alle" in text:
-            print("Hier sind alle ToDos:", end="\n\n")
+            output("Hier sind alle ToDos:", end="\n\n")
             for nummer, details in alle_aufgaben.items():
                 if "debug" in text:
-                    print(f"Debuginfo (interne Nummer): {nummer}")
-                print(f"{details["Aufgabe"]} ({details["Status"]})")
-                print(f"{details["Text"]}")
-                print("")
+                    output(f"Debuginfo (interne Nummer): {nummer}")
+                output(f"{details["Aufgabe"]} ({details["Status"]})")
+                output(f"{details["Text"]}")
+                output("")
 
         else:
-            print("Hier sind alle zu erledigenden ToDos:", end="\n\n")
+            output("Hier sind alle zu erledigenden ToDos:", end="\n\n")
             for nummer, details in alle_aufgaben.items():
                 if details.get("Status") == "Nicht erledigt":
                     if "debug" in text:
-                        print(f"Debuginfo (interne Nummer): {nummer}")
-                    print(f"{details["Aufgabe"]} ({details["Status"]})")
-                    print(f"{details["Text"]}")
-                    print("")
+                        output(f"Debuginfo (interne Nummer): {nummer}")
+                    output(f"{details["Aufgabe"]} ({details["Status"]})")
+                    output(f"{details["Text"]}")
+                    output("")
 
     if "drücke" in text:
         found = True
@@ -252,50 +236,51 @@ def handle_command(text):
         found = True
         flask_status = is_flask_running()
         if flask_status == "OTHER_APP_RUNNING":
-            print("ACHTUNG: Port 5000 ist bereits besetzt, aber nicht von Charvis Web UI")
-            print("Die Web UI kann nicht gestartet werden. Bitte schließe zuerst die andere App und versuche es dann nochmal.")
+            output("ACHTUNG: Port 5000 ist bereits besetzt, aber nicht von Charvis Web UI")
+            output("Die Web UI kann nicht gestartet werden. Bitte schließe zuerst die andere App und versuche es dann nochmal.")
         else:
             if flask_status == "NOT_RUNNING":
                 subprocess.Popen(["python", "gui/flaskgui.py"])
-                print("Flaskserver für Charvis Web UI wird gestartet")
+                output("Flaskserver für Charvis Web UI wird gestartet")
         
-            print("Oberfläche wird geöffnet")
+            output("Oberfläche wird geöffnet")
             webbrowser.open("http://127.0.0.1:5000", new=1)
 
     elif "eingabe" in text: #Inputeinstellungen ändern
         found = True
         if "sprach" in text and "terminal" in text:
-            print("Zu Sprach- und Terminaleingabe gewechselt")
-            print("Halte NUMPAD-0 zum Sprechen...")
+            output("Zu Sprach- und Terminaleingabe gewechselt")
+            output("Halte NUMPAD-0 zum Sprechen...")
             mode = "speech+terminal"
             settings["eingabemodus"] = mode
             save_settings(settings)
 
         elif "sprache" in text:
-            print("Zu Spracheingabe gewechselt")
-            print("Halte NUMPAD-0 zum Sprechen...")
+            output("Zu Spracheingabe gewechselt")
+            output("Halte NUMPAD-0 zum Sprechen...")
             mode = "speech"
             settings["eingabemodus"] = mode
             save_settings(settings)
 
         elif "terminal" in text:
-            print("Zu Terminaleingabe gewechselt")
+            output("Zu Terminaleingabe gewechselt")
             mode = "terminal"
             settings["eingabemodus"] = mode
             save_settings(settings)
 
         else:
-            print("❌ Bitte gib an, welchen Eingabemodus du öffnen möchtest ('Sprache', 'Terminal' oder 'Sprache und Terminal')")
+            output("❌ Bitte gib an, welchen Eingabemodus du öffnen möchtest ('Sprache', 'Terminal' oder 'Sprache und Terminal')")
 
     if "feuere ein laserstrahl" in text or "feuere ein laser-strahl" in text:
-        os.startfile("../media/laser_soundeffect.mp3")
+        os.startfile("./media/laser_soundeffect.mp3")
         found = True
+        output("Laserstrahl wird abgefeuer!")
         
     if "!" == text or "abbrechen" in text or "stopp" in text:
         subprocess.run(["shutdown", "/a"])
-        print("Aktion abgebrochen (Funktioniert nur bei bestimmten Befehlen)")
+        output("Aktion abgebrochen (Funktioniert nur bei bestimmten Befehlen)")
         found = True
 
     if not found:
-        print("❌ Kein passender Befehl gefunden")
+        output("❌ Kein passender Befehl gefunden")
         return("Nix statt none")

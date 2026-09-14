@@ -25,3 +25,16 @@ def save_settings(settings):
     SETTINGS = BASE_DIR / "data" / "settings.json"
     with open(SETTINGS, "w") as file:
         json.dump(settings, file, indent=4)
+
+def import_data(path):
+    BASE_DIR = Path(__file__).parent
+    SETTINGS = BASE_DIR /path
+    with open(SETTINGS, "r") as file:
+        settings = json.load(file)
+    return settings
+
+def save_data(path, data):
+    BASE_DIR = Path(__file__).parent
+    SETTINGS = BASE_DIR /path
+    with open(SETTINGS, "w") as file:
+        json.dump(data, file, indent=4)
