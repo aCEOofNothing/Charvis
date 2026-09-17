@@ -10,13 +10,33 @@
 
     <h1>Charvis System</h1>
 
-    <form method="post">
+    <form method="post" id="input_options_form">
 
         <h2>Input-Optionen an und ausschalten</h2>
 
         <input type="checkbox" name="input_options_value" value="speech" id="speech">
         <label for="speech">Speech</label>
         <input type="checkbox" name="input_options_value" value="terminal" id="terminal">
+        <label for="terminal">Terminal</label>
+
+        <button type="submit">Ändern</button>
+    </form>
+
+    <form method="post" id="wakeword_switch_form">
+
+        <input type="checkbox" name="wakeword_switch_value" value="wakeword" id="wakeword">
+        <label for="wakeword">Wakeword (an oder aus)</label>
+
+        <button type="submit">Ändern</button>
+    </form>
+
+    <br>
+
+    <form method="post" id="output_options_form">
+
+        <h2>Output-Optionen an und ausschalten</h2>
+
+        <input type="checkbox" name="output_options_value" value="terminal" id="terminal">
         <label for="terminal">Terminal</label>
 
         <button type="submit">Ändern</button>

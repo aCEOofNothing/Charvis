@@ -20,11 +20,18 @@ def index():
     if request.method == "POST":
         input_options_changed = request.form.getlist("input_options_value")
         settings = import_settings()
-        settings["input"]["speech"] = input_options_changed["speech"]
-        settings["input"]["terminal"] = input_options_changed["terminal"]
+        print(input_options_changed)
+        if "speech" in input_options_changed:
+            settings["input"]["speech"] = True
+        else:
+            settings["input"]["speech"] = False
+        if "terminal" in input_options_changed:
+            settings["input"]["terminal"] = True
+        else:
+            settings["input"]["terminal"] = False
         save_settings(settings)
 
-
+    #Wie mach ich das ich hier mehrere fomulare empfangen und zwischen ihnen unterscheiden kann?
 
     return render_template("index.html")
 

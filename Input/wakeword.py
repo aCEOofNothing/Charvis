@@ -25,7 +25,7 @@ def wakeword():
 
     with mic.recorder(samplerate=16000) as recorder:
         while True:
-            data = recorder.record(numframes=8000)
+            data = recorder.record(numframes=1600)
 
             data = np.array(data)
 

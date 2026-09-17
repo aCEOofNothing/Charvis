@@ -1,6 +1,6 @@
 {
     "input": {
-        "speech": true,
+        "speech": false,
         "terminal": true
     },
     "output": {

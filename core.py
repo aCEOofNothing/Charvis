@@ -23,6 +23,7 @@ import ctypes
 import os
 import json
 import webbrowser
+import time
 
 from modules.befehl_zu_bestimmter_tastendruck_modul.befehl_zu_bestimmter_tastendruck import befehl_zu_bestimmter_tastendruck
 from assets import save_settings, import_settings, is_flask_running, save_data, import_data
@@ -114,7 +115,8 @@ def handle_command(text):
     for keyword, (path, args) in commands.items(): #Einzel-Öffnen
 
         if keyword in text:
-            output(f"🚀 {keyword} wird gestartet...")
+            output_keyword=keyword.upper
+            output(f"🚀 {output_keyword} wird gestartet...")
             subprocess.Popen([path] + args)
             found = True
             break
@@ -232,6 +234,18 @@ def handle_command(text):
         found = True
         befehl_zu_bestimmter_tastendruck(text)
 
+#    plugin_list = import_data("core_py_plugins/plugin-list.json")
+#    for keyword, name in plugin_list:
+#        if keyword in text:
+#            import_path = "core_py_plugins." + name
+#            from import_path import name
+#            name(text)
+
+#    def load_plugins():
+#        plugin_list = import_data("core_py_plugins/plugin-list.json")
+#        name = "befehl_zu_bestimmter_tastendruck"
+#        import core_py_plugins
+    
     if "öffne die oberfläche" in text:
         found = True
         flask_status = is_flask_running()
@@ -242,9 +256,12 @@ def handle_command(text):
             if flask_status == "NOT_RUNNING":
                 subprocess.Popen(["python", "gui/flaskgui.py"])
                 output("Flaskserver für Charvis Web UI wird gestartet")
-        
+                time.sleep(0.5)
             output("Oberfläche wird geöffnet")
+            path_to_electron_js = os.path.join('gui', 'index.js')
+            subprocess.Popen(["electron", path_to_electron_js], shell=True)
             webbrowser.open("http://127.0.0.1:5000", new=1)
+            subprocess.Popen(["start", "", "firefox", "--new-window", "http://127.0.0.1:5000"], shell=True)
 
     elif "eingabe" in text: #Inputeinstellungen ändern
         found = True

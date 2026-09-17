@@ -4,6 +4,7 @@ from faster_whisper import WhisperModel
 import soundcard as sc
 import numpy as np
 import time
+import os
 
 from shared import input_queue
 from assets import import_settings
