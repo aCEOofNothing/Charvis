@@ -87,5 +87,3 @@ def what_a_key_is_this():
 def tastennamen_herausfinden():
     while True:
         what_a_key_is_this()
-
-tastennamen_herausfinden()
