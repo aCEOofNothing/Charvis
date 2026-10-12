@@ -49,7 +49,6 @@ commands = {
     "da vinci resolve": ("C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Blackmagic Design\\DaVinci Resolve\\DaVinci Resolve.lnk", [])
 }
 
-
 def handle_command(text):
     orginal_text = text.strip()
     text = orginal_text.lower().strip()

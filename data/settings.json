@@ -8,7 +8,12 @@
         "flaskgui": true
     },
     "triggerkey": "num 0",
-    "wakeword": true,
+    "wakeword": false,
     "wakeword_word": "hey_jarvis",
-    "autostart_flaskgui": true
+    "autostart_flaskgui": true,
+    "autogreeting": true,
+
+    "user": {
+        "username": "Boss"
+    }
 }

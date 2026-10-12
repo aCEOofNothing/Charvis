@@ -11,23 +11,30 @@ from  assets import is_flask_running, import_settings
 from shared import input_queue
 from input.wakeword import listen_with_wakeword
 from input.terminal import terminal_input
+from autogreeting import autogreeting
+
+def greeting():
+    settings = import_settings()
+    input_options = settings["input"]
+    if settings["autostart_flaskgui"] == True:
+        flask_status = is_flask_running()
+        if flask_status == "NOT_RUNNING":
+            subprocess.Popen(["python", "gui/flaskgui.py"])
+        elif flask_status == "OTHER_APP_RUNNING":
+            print("Fehler bei automatischem UI Start")
+            print("ACHTUNG: Port 5000 ist bereits besetzt, aber nicht von Charvis Web UI")
+            print("Die Web UI kann nicht gestartet werden. Bitte schließe zuerst die andere App und versuche es dann nochmal.")
+    if input_options["speech"] == True:
+        print("Halte NUMPAD-0 zum Sprechen...")
+
+    if settings["autogreeting"] == True:
+        autogreeting.autogreeting()
+
 
 
 print("♾️    Charvis Ist Bereit!", end="\n\n")
 
-
-settings = import_settings()
-input_options = settings["input"]
-if settings["autostart_flaskgui"] == True:
-    flask_status = is_flask_running()
-    if flask_status == "NOT_RUNNING":
-        subprocess.Popen(["python", "gui/flaskgui.py"])
-    elif flask_status == "OTHER_APP_RUNNING":
-        print("Fehler bei automatischem UI Start")
-        print("ACHTUNG: Port 5000 ist bereits besetzt, aber nicht von Charvis Web UI")
-        print("Die Web UI kann nicht gestartet werden. Bitte schließe zuerst die andere App und versuche es dann nochmal.")
-if input_options["speech"] == True:
-    print("Halte NUMPAD-0 zum Sprechen...")
+greeting()
 
 #-----Grundlogik-----
 
