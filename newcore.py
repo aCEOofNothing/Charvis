@@ -76,7 +76,6 @@ def shortcut_playpause():
 def shortcut_next_track():
     pyautogui.press("next track")
 
-
 def shortcut_prev_track():
     pyautogui.press("previous track")
 
@@ -138,7 +137,7 @@ def pc_ruhezustand():
     subprocess.run(["shutdown", "/h"])
     output("PC in Ruhezustand versetzt")
 
-def write_sth(orginal_text, trigger):
+def start_write_sth(orginal_text, trigger):
     output("⌨️ Tippe Text...")
     to_type = orginal_text[len(trigger):].strip().strip(",.?!")
     if to_type:
@@ -329,13 +328,13 @@ bigbabacommandsregistry = {
 
     "shortcut_next_track": {
         "triggers": ["nächstes", "überspringen"],
-        "handler": "def shortcut_next_track",
+        "handler": "shortcut_next_track",
         "description": ""
     },
 
-    "": {
+    "shortcut_prev_track": {
         "triggers": ["zurück"],
-        "handler": "",
+        "handler": "shortcut_prev_track",
         "description": ""
     },
 
@@ -354,12 +353,6 @@ bigbabacommandsregistry = {
     "wakeword_settings": {
         "triggers": ["komandowort"],
         "handler": "wakeword_settings",
-        "description": ""
-    },
-
-    "": {
-        "triggers": [],
-        "handler": "",
         "description": ""
     },
 
@@ -388,12 +381,6 @@ bigbabacommandsregistry = {
         "second_triggers":["ruhezustand"],
         "triggers": ["pc"],
         "handler": "pc_ruhezustand",
-        "description": ""
-    },
-
-    "": {
-        "triggers": [],
-        "handler": "",
         "description": ""
     },
 
@@ -455,7 +442,12 @@ bigbabacommandsregistry = {
 
 
 
+
 def understand_command(text):
+    context = {
+    "text": text
+    }
+    
     orginal_text = text.strip()
     text = orginal_text.lower().strip()
 
@@ -480,7 +472,7 @@ def understand_command(text):
 
         for trigger in data.get("triggers", []):
             if trigger in text:
-                if data.get("second_trigger"):
+                if data.get("second_triggers"):
                     for second_trigger in data.get("second_triggers", []):
                         if second_trigger in text:
                             handler = data["handler"]
@@ -507,11 +499,42 @@ def understand_command(text):
 
 
 
-ergebnis = understand_command("?")
-print(ergebnis)
+#ergebnis = understand_command("schreibe hallo")
+#print(ergebnis)
 
 
+#Testscript
+def test_all_comments():
+    name_fehlt = 0
+    handler_ungülltig = 0
+    vorhanden = 0
 
+    for command, data in bigbabacommandsregistry.items():
+        handler_name = data.get("handler")
+
+        if not isinstance(handler_name, str):
+            print(f"Handler Name fehlt: {command}")
+            name_fehlt += 1
+            continue
+
+        handler = globals().get(handler_name)
+        if not callable(handler):
+            print(f"Handler ungülltig: {command}")
+            handler_ungülltig += 1
+            continue
+
+        print(f"Command vorhanden: {command}")
+        vorhanden += 1
+
+    getestet = name_fehlt + handler_ungülltig + vorhanden
+    ergebnis = {"vorhanden": vorhanden, "getestet": getestet, "name fehlt": name_fehlt, "handler ungülltig": handler_ungülltig}
+    print("---Test fertig. Zusammenfassung:")
+    print(f"Fehler: Handler Name fehlt ({name_fehlt}), Handler ungülltig ({handler_ungülltig})")
+    print(f"Commands erreichbar und vorhanden: ({vorhanden}) von {getestet} getesteten")
+    return(ergebnis)
+
+
+test_all_comments()
 
 
 
@@ -746,4 +769,7 @@ def handle_command(text):
     if not found:
         output("❌ Kein passender Befehl gefunden")
         return("Nix statt none")
+
+
+
     
