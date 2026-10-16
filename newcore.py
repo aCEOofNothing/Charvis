@@ -2,14 +2,7 @@
 
 
 
-
-
-
 #handler mit argumenten starten fehlt im parser
-
-
-
-
 
 # "Abbrechen"-Funktion muss gefixt werden
 
@@ -18,7 +11,7 @@
 
 
 
-
+#Das ist der neue core (noch nicht integriert), der nicht mehr mit aneinandergereiten if-Abfragen funktioniert, sondern mit einem Registery das von einem Depatcher ausgelesen wird.
 
 import keyboard
 import subprocess
@@ -37,10 +30,9 @@ from assets import save_settings, import_settings, is_flask_running, save_data, 
 from output.output import output, outputline
 
 
-#------Aplication list------
+#------application dict------
 
-
-commands = {
+pc_applications = {
     "firefox privat": ("C:\\Program Files\\Mozilla Firefox\\firefox.exe", ["-private-window"]),
     "firefox": ("C:\\Program Files\\Mozilla Firefox\\firefox.exe", []),
     "whatsapp": (None, []),
@@ -58,9 +50,7 @@ commands = {
 }
 
 
-
-#------Befehlsdefinitionen für neue Logik-----
-
+#------command definations------
 
 def say_hello():
     found = True
@@ -68,7 +58,6 @@ def say_hello():
 
 def start_gaming_mode():
     output("🎮 Gamingmodus wird gestartet...")
-
 
 def shortcut_playpause():
     pyautogui.press("playpause")
@@ -108,11 +97,11 @@ def start_gaming_mode():
 
     for app in gaming_apps:
                  
-        if app not in commands:
+        if app not in pc_applications:
                 output(f"❌ {app} existiert nicht im commands-Dictionary")
                 continue
 
-        path, args = commands[app]
+        path, args = pc_applications[app]
 
         output(f"🚀 Starte {app}")
         subprocess.Popen([path] + args)
@@ -174,27 +163,6 @@ def helpcommand():
             outputline("-")
 
         output("fertig")
-
-
-#altes helpcomment:
-"""def helpcomment():
-        output("Ich kann mehr als du!")
-        output("Hier sind alle meine Befehle und Funktionen:")
-        output("")
-        funktionen = {
-            "Transkripieren": "Sag einfach: 'Schreibe ...'",
-            "Gamingmodus öffnen": "'Gamingmodus'",
-            "Bestimmtes Programm öffnen": "Name des Programms",
-            "PC Befehle: herunterfahren, neustarten, Benutzer abmelden, Ruhezustand": "'PC ...'",
-            "Abbrechen (funktioniert nur bei bestimmten Befehlen)": "'!' oder 'Abbrechen' oder 'Stopp'",
-            "Einstellungen": "'Einstellungen'",
-            "Hilfeinformation / Befehlsübersicht": "'?' oder 'Was kannst du?' oder 'Hilfe'",
-            "Zu erledingende ToDos ausgeben": "'ToDo'",
-            "Erledigte ToDos ausgeben": "'Erledigte ToDos",
-            "Alle ToDos ausgeben": "'alle ToDos'"
-        }
-        for keyword, funktions_beschreibung in funktionen.items():
-            output(keyword, ":", funktions_beschreibung)"""
 
 def todo_shit(text):
         settings = import_data("data/todo.json")
@@ -288,7 +256,7 @@ def stop():
 
 
 
-#------neue Befehle-Logik-----
+#------commands registery-----
 
 bigbabacommandsregistry = {
     "stop": {
@@ -442,6 +410,7 @@ bigbabacommandsregistry = {
 
 
 
+#------depatcher / intent classivication------
 
 def understand_command(text):
     context = {
@@ -486,7 +455,7 @@ def understand_command(text):
                     handler()
                     return(f"Befehl erkannt: Command-Dictionary (standart): {command}")
 
-    for keyword, (path, args) in commands.items(): #Einzel-Öffnen
+    for keyword, (path, args) in pc_applications.items(): #Einzel-Öffnen
 
         if keyword in text:
             output_keyword=keyword.title()
@@ -499,11 +468,13 @@ def understand_command(text):
 
 
 
+#testscript for scripts mainfunction
 #ergebnis = understand_command("schreibe hallo")
 #print(ergebnis)
 
 
-#Testscript
+#command registery testscript
+#The holy big german TÜV-Amt?
 def test_all_comments():
     name_fehlt = 0
     handler_ungülltig = 0
@@ -538,9 +509,11 @@ test_all_comments()
 
 
 
+
+
+
 #------Alte Befehle-Logik-----
-
-
+#(gehört nicht zum neuen core, ist auch nicht die vollständige alte Logik - die ist noch in core.py)
 
 def handle_command(text):
 
@@ -569,18 +542,18 @@ def handle_command(text):
 
         for app in gaming_apps:
                  
-            if app not in commands:
+            if app not in pc_applications:
                 output(f"❌ {app} existiert nicht im commands-Dictionary")
                 continue
 
-            path, args = commands[app]
+            path, args = pc_applications[app]
 
             output(f"🚀 Starte {app}")
             subprocess.Popen([path] + args)
 
         return
 
-    for keyword, (path, args) in commands.items(): #Einzel-Öffnen
+    for keyword, (path, args) in pc_applications.items(): #Einzel-Öffnen
 
         if keyword in text:
             output_keyword=keyword.upper
@@ -769,6 +742,9 @@ def handle_command(text):
     if not found:
         output("❌ Kein passender Befehl gefunden")
         return("Nix statt none")
+
+
+
 
 
 
