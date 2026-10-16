@@ -1,6 +1,7 @@
 import requests
 import json
 from pathlib import Path
+import datetime
 
 def is_flask_running():
     try:
@@ -38,3 +39,12 @@ def save_data(path, data):
     SETTINGS = BASE_DIR /path
     with open(SETTINGS, "w") as file:
         json.dump(data, file, indent=4)
+
+#def fehler_protokollieren(fehler):
+ #   BASE_DIR = Path(__file__).parent
+ #   FEHLERPROTOKOLL = BASE_DIR / "data" / "fehlerprotokoll.txt"
+  #  nowtime = datetime.date(4, 4, 8)
+ #   with open(FEHLERPROTOKOLL, "w") as file:
+ #       file + " --- " + nowtime + fehler
+#
+#fehler_protokollieren("japadutesttest")

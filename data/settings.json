@@ -5,7 +5,7 @@
     },
     "output": {
         "terminal": true,
-        "flaskgui": true
+        "flaskgui": false
     },
     "triggerkey": "num 0",
     "wakeword": false,
