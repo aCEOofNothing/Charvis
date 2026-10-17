@@ -267,10 +267,7 @@ bigbabacommandsregistry = {
     },
 
     "write_sth": {
-        "i_need_this": {
-            "variable": ["orginal_text"],
-            "my_tigger": True
-            },
+        "i_need_this": ["orginal_text", "used_trigger"],
         "triggers": ["schreibe", "schreib", "tippe", "tip"],
         "handler": "start_write_sth",
         "description": "Tippt in dem Textfeld des Cursors, das was gesagt wurde."
@@ -353,33 +350,27 @@ bigbabacommandsregistry = {
     },
 
     "open_settings": {
-        "i_need_this": {
-            "variable": "text"
-        },
+        "i_need_this": ["text"],
         "triggers": ["einstellungen"],
         "handler": "open_settings",
         "description": ""
     },
 
     "helpcommand": {
-        "triggers": ["?", "Was kannst du?", "Hilfe"],
+        "triggers": ["?", "was kannst du?", "hilfe"],
         "handler": "helpcommand",
         "description": ""
     },
 
     "todo_shit": {
-        "i_need_this": {
-            "variable": ["text"]
-        },
+        "i_need_this": ["text"],
         "triggers": ["todo", "to do", "to-do"],
         "handler": "todo_shit",
         "description": ""
     },
 
     "drücke_taste": {
-        "i_need_this": {
-            "variable": ["text"]
-        },
+        "i_need_this": ["text"],
         "triggers": ["drücke"],
         "handler": "drücke_taste",
         "description": ""
@@ -392,9 +383,7 @@ bigbabacommandsregistry = {
     },
 
     "settings_input": {
-        "i_need_this": {
-            "variable": ["text"]
-        },
+        "i_need_this": ["text"],
         "triggers": ["eingabe"],
         "handler": "settings_input",
         "description": ""
@@ -412,52 +401,91 @@ bigbabacommandsregistry = {
 
 #------depatcher / intent classivication------
 
-def understand_command(text):
-    context = {
-    "text": text
-    }
-    
+def understand_command(text: str):  
     orginal_text = text.strip()
     text = orginal_text.lower().strip()
+
+    used_trigger = None
+    global command_context
+    command_context = {
+    "used_trigger": used_trigger,
+    "orginal_text": orginal_text,
+    "text": text
+    }
 
     if not text:
         output("fuck you")
         return("text do not exist")
 
+#funktioniert give arguments?
     for command, data in bigbabacommandsregistry.items():
         if data.get("ultimate_triggers"):
             for ultimatetrigger in data.get("ultimate_triggers"):
                 if text == ultimatetrigger:
+                    used_trigger = {"ultimatetrigger": ultimatetrigger}
+                    command_context ["used_trigger"] = used_trigger
                     handler = data["handler"]
                     handler = globals()[handler]
                     if data.get("i_need_this"):
-                        give_arguments = data["i_need_this"]
-                        handler(give_arguments)
-                        return(f"Befehl erkannt: Command-Dictionary (mit second trigger und i need this): {command}")
-#funktioniert give arguments?
+                        required_args = data["i_need_this"]
 
+                        if not all(arg in command_context for arg in required_args):
+                            print(f"Fehler: Benötigte Argumente fehlen")
+                            return(f"Benötigte Argumente fehlen")
+                        
+                        give_arguments = [command_context[arg] for arg in required_args]
+                        handler(*give_arguments)
+                        return(f"Befehl erkannt: Command-Dictionary (mit ultimate trigger und i need this): {command}")
                     handler()
-                    return(f"Befehl erkannt: Command-Dictionary (mit second trigger): {command}")
+                    return(f"Befehl erkannt: Command-Dictionary (mit ultimate trigger): {command}")
 
         for trigger in data.get("triggers", []):
             if trigger in text:
                 if data.get("second_triggers"):
                     for second_trigger in data.get("second_triggers", []):
                         if second_trigger in text:
+                            used_trigger = {"trigger": trigger, "second_trigger": second_trigger}
+                            command_context["used_trigger"] = used_trigger
                             handler = data["handler"]
                             handler = globals()[handler]
+                            if data.get("i_need_this"):
+                                required_args = data["i_need_this"]
+
+                                if not all(arg in command_context for arg in required_args):
+                                    print(f"Fehler: Benötigte Argumente fehlen")
+                                    return(f"Benötigte Argumente fehlen")
+                                
+                                give_arguments = [command_context[arg] for arg in required_args]
+                                handler(*give_arguments)
+                                return(f"Befehl erkannt: Command-Dictionary (mit second trigger und i need this): {command}")
                             handler()
-                            return(f"Befehl erkannt: Command-Dictionary (mit ultimate trigger): {command}")
+                            return(f"Befehl erkannt: Command-Dictionary (mit second trigger): {command}")
 
                 else:
+                    used_trigger = {"trigger": trigger}
+                    command_context["used_trigger"] = used_trigger
                     handler = data["handler"]
                     handler = globals()[handler]
+                    if data.get("i_need_this"):
+                        required_args = data["i_need_this"]
+
+                        if not all(arg in command_context for arg in required_args):
+                            print(f"Fehler: Benötigte Argumente fehlen")
+                            return(f"Benötigte Argumente fehlen")
+                        
+                        give_arguments = [command_context[arg] for arg in required_args]
+                        handler(*give_arguments)
+                        return(f"Befehl erkannt: Command-Dictionary (standart mit i need this): {command}")
                     handler()
                     return(f"Befehl erkannt: Command-Dictionary (standart): {command}")
 
     for keyword, (path, args) in pc_applications.items(): #Einzel-Öffnen
 
         if keyword in text:
+            if not path:
+                print("Fehler: App Pfad fehlt im Dictionary")
+                return("Fehler")
+
             output_keyword=keyword.title()
             output(f"🚀 {output_keyword} wird gestartet...")
             subprocess.Popen([path] + args)
@@ -469,8 +497,8 @@ def understand_command(text):
 
 
 #testscript for scripts mainfunction
-#ergebnis = understand_command("schreibe hallo")
-#print(ergebnis)
+ergebnis = understand_command("schreibe hallo")
+print(ergebnis)
 
 
 #command registery testscript
@@ -479,8 +507,12 @@ def test_all_comments():
     name_fehlt = 0
     handler_ungülltig = 0
     vorhanden = 0
+    insgesamt_geforderte_args = set()
 
     for command, data in bigbabacommandsregistry.items():
+        if data.get("i_need_this"):
+            insgesamt_geforderte_args.update(data.get("i_need_this"))
+
         handler_name = data.get("handler")
 
         if not isinstance(handler_name, str):
@@ -498,14 +530,16 @@ def test_all_comments():
         vorhanden += 1
 
     getestet = name_fehlt + handler_ungülltig + vorhanden
-    ergebnis = {"vorhanden": vorhanden, "getestet": getestet, "name fehlt": name_fehlt, "handler ungülltig": handler_ungülltig}
+    ergebnis = {"vorhanden": vorhanden, "getestet": getestet, "name fehlt": name_fehlt, "handler ungülltig": handler_ungülltig, "insgesammt geforderte args": insgesamt_geforderte_args, }
     print("---Test fertig. Zusammenfassung:")
     print(f"Fehler: Handler Name fehlt ({name_fehlt}), Handler ungülltig ({handler_ungülltig})")
     print(f"Commands erreichbar und vorhanden: ({vorhanden}) von {getestet} getesteten")
+    print(f"alle geforderten Args: {insgesamt_geforderte_args} ({len(insgesamt_geforderte_args)})")
     return(ergebnis)
 
 
-test_all_comments()
+if __name__ == "__main__":
+    test_all_comments()
 
 
 
